@@ -89,7 +89,7 @@ def extract_video_metadata(video_ids) -> list:
         raise e
     
 def load_data_to_file(extracted_data:list) -> bool:
-    json_data_file = f"{os.getcwd()}/videos_data_{date.today()}.json"
+    json_data_file = f"{os.getcwd()}/data/videos_data_{date.today()}.json"
     try:
         with open(json_data_file, 'w', encoding='utf-8') as json_file:
             json.dump(extracted_data, json_file, ensure_ascii=False, indent=4)
