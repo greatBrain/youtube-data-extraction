@@ -26,20 +26,19 @@ def get_playlist_id() -> str:
     except rq.exceptions.RequestException as e:
         raise e
 
-def get_video_ids() -> list:
-    #play_list_id:str="UUX6OQ3DkcsbYNE6H8uQQuVA"
+def get_video_ids() -> list:    
     play_list_id = get_playlist_id()
     API_KEY:str=_get_api_key()
     max_result:int=50
     base_url = f"https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults={max_result}&playlistId={play_list_id}&key={API_KEY}"
     videos_ids:list = []    
-    page_token:str = None # funciona como un puntero para la paginación
+    next_page_token:str = None
 
     try:
         while True:
            url = base_url
-           if page_token:
-              url += f"&pageToken={page_token}"
+           if next_page_token:
+              url += f"&pageToken={next_page_token}"
            response = rq.get(url)
            response.raise_for_status()
            data = response.json()
@@ -47,9 +46,9 @@ def get_video_ids() -> list:
            for item in data.get('items', []):
                video_id = item['contentDetails']['videoId']
                videos_ids.append(video_id) 
-               page_token = data.get('nextPageToken')   
+               next_page_token = data.get('nextPageToken')   
                
-               if not page_token:
+               if not next_page_token:
                   break           
            return videos_ids
         
